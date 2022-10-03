@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.624">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Emma Rand">
+
+<title>Transcriptome of Umbilical Cord-Mesenchymal Stromal Cell response to inflammation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+<script src="report_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="report_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Transcriptome of Umbilical Cord-Mesenchymal Stromal Cell response to inflammation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Emma Rand </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We have:</p>
+<ul>
+<li><p>RNA-Seq data for donor UC-MSC stimulated or not with inflammatory cytokines</p></li>
+<li><p>indoleamine 2,3-dioxygenase (IDO) expression measured by PCR in stimulated UC-MSC. IDO is an immunomodulatory and anti-inflammatory protein up-regulated in response to inflammatory cytokines.</p></li>
+<li><p>ATP from stimulated or unstimulated PBMC co-cultured with UC-MSC . ATP is measure of PBMCs proliferation where high ATP indicated high proliferation and thus low PBMC suppression. Note that cells of two donors did not survive culture: P17041 and P17055</p></li>
+</ul>
+<div class="cell">
+
+</div>
+<section id="metadata" class="level3">
+<h3 class="anchored" data-anchor-id="metadata">Metadata</h3>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Sample name </th>
+   <th style="text-align:left;"> Donor </th>
+   <th style="text-align:left;"> Treatment </th>
+   <th style="text-align:left;"> IDO response class </th>
+   <th style="text-align:right;"> IDO value (PCR) </th>
+   <th style="text-align:right;"> Rank of ATP values (low to high) </th>
+   <th style="text-align:right;"> ATP value </th>
+   <th style="text-align:right;"> ATP in control </th>
+   <th style="text-align:right;"> ATP relative to control </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> S01_P17040_unstim_lo </td>
+   <td style="text-align:left;"> P17040 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 8766 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.00388 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.24576 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S02_P17040_stimul_lo </td>
+   <td style="text-align:left;"> P17040 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 8766 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.00308 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.20656 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S03_P17041_unstim_lo </td>
+   <td style="text-align:left;"> P17041 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 6564 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S04_P17041_stimul_lo </td>
+   <td style="text-align:left;"> P17041 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 6564 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S05_P17083_unstim_hi </td>
+   <td style="text-align:left;"> P17083 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 56775 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.03342 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 2.11519 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S06_P17083_stimul_hi </td>
+   <td style="text-align:left;"> P17083 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 56775 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.01223 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.82085 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S07_P17055_unstim_hi </td>
+   <td style="text-align:left;"> P17055 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 34671 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S13_P14086_unstim_hi </td>
+   <td style="text-align:left;"> P14086 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 30000 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.00148 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.09365 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S14_P14086_stimul_hi </td>
+   <td style="text-align:left;"> P14086 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 30000 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.00404 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.27103 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S15_P12316_unstim_hi </td>
+   <td style="text-align:left;"> P12316 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 30634 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.00263 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.16668 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S16_P12316_stimul_hi </td>
+   <td style="text-align:left;"> P12316 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 30634 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.01863 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 1.25053 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S12_P17055_stimul_hi </td>
+   <td style="text-align:left;"> P17055 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 34671 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S31_P16143_unstim_hi </td>
+   <td style="text-align:left;"> P16143 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 29591 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.00318 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.20121 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S32_P16143_stimul_hi </td>
+   <td style="text-align:left;"> P16143 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 29591 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.00155 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.10401 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S25_P15142_unstim_lo </td>
+   <td style="text-align:left;"> P15142 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 3000 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0.00358 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.22648 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S26_P15142_stimul_lo </td>
+   <td style="text-align:left;"> P15142 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 3000 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.00289 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.19370 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S33_P16088_unstim_lo </td>
+   <td style="text-align:left;"> P16088 </td>
+   <td style="text-align:left;"> unstim </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 1432 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.00526 </td>
+   <td style="text-align:right;"> 0.0158 </td>
+   <td style="text-align:right;"> 0.33287 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> S34_P16088_stimul_lo </td>
+   <td style="text-align:left;"> P16088 </td>
+   <td style="text-align:left;"> stimul </td>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 1432 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0.00264 </td>
+   <td style="text-align:right;"> 0.0149 </td>
+   <td style="text-align:right;"> 0.17719 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<ul>
+<li><p>Treatment: stimulated with inflammatory cytokines or unstimluated</p></li>
+<li><p>IDO response class: Claire’s binary classification based on IDO value. Indicates whether donor has higher or low IDO in response the stimulation</p></li>
+<li><p>IDO value (PCR): (IDO) expression measured by PCR in stimulated UC-MSC.</p></li>
+<li><p>Rank of ATP values (low to high): Rank of ATP value within treatment group. 1 = lowest PBMC suppression (highest ATP) , 7 = highest PBMS suppression (lowest ATP)</p></li>
+<li><p>ATP value: in stimulated or unstimulated PBMC co-cultured with UC-MSC; low ATP indicates donor UC-MSCs suppress PBMC well , high ATP indicates donor UC-MSCs poorly suppress PBMC</p></li>
+<li><p>ATP in control: in stimulated or unstimulated PBMC alone</p></li>
+<li><p>ATP relative to control: ATP value/ATP in control:</p></li>
+</ul>
+<div class="cell">
+
+</div>
+</section>
+</section>
+<section id="questions" class="level2">
+<h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<ul>
+<li><p>Is there a different in the transcriptome between donors that had a high IDO response and those that had a low IDO response where the IDO expression was PCR’d</p>
+<ul>
+<li><p>are there differences between these higher-responders and low-responders</p></li>
+<li><p>if yes, how are theses differences characterised</p></li>
+<li><p>is there a correlation between measured IDO and and IDO transcripts</p></li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li><p>Is there a different in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)</p>
+<ul>
+<li><p>are there differences between weak and strong suppressers</p></li>
+<li><p>if yes, how are theses differences characterised</p></li>
+<li><p>is there a correlation between measured IDO and and PBMC suppression</p></li>
+</ul></li>
+</ul>
+<p>We can examine the difference between stimulated and unstimulated (averaging over the patients) and the difference between patients (averaging over the treatments) but not whether the effect of the stimulated differs between patients as we do not have within treatment-patient replication.</p>
+<p>We can examine the difference between higher-responders and low-responders in the stimulated and unstimulated groups.</p>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<p>Counts for each transcript were summed across samples and those with fewer than 2 were removed leaving 25324 genes. For exploratory analysis counts were converted to Transcripts Per Million (TPM), a normalization method (the number of transcripts per 1,000,000 RNA molecule). It allows some comparison in expression between genes in within a sample. The variance in TMP across samples was calculated.</p>
+<p>DESeq2 <span class="citation" data-cites="DESeq2">(<a href="#ref-DESeq2" role="doc-biblioref">Love, Huber, and Anders 2014</a>)</span> was used for differential expression. It uses a robust normalisation method based on the negative binomial distribution, with variance and mean linked by local regression [@]. This makes it possible to compare the expression of the same gene among samples.</p>
+</section>
+<section id="exploratory-analysis-of-the-read-count-table" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-analysis-of-the-read-count-table">Exploratory analysis of the read count table</h2>
+<section id="pca" class="level3">
+<h3 class="anchored" data-anchor-id="pca">PCA</h3>
+<p>Performed on <span class="math inline">\(log_2(TMP + 1)\)</span> for 25324 genes to visualise sources of variation. Clear separation of treatment groups on PC1, possibly some separation of donors on PC2. P17040 and P17041 appear ore similar; P14086 and P15142 appear more similar. Note P17041 cells did not survive culture.</p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><a href="figures/pca-log2tmp-all.png"><img src="figures/pca-log2tmp-all.png" class="img-fluid figure-img" width="800"></a></p>
+</figure>
+</div>
+<p>We can consider pairwise plots of the the first 6 PC (67% variance) to see any separation between donors more clearly. PC3 separates P17083 and PC5 separates P14086 (which we saw in the above</p>
+<p><img src="figures/pca_pairs_log2tmp.png" class="img-fluid" width="600"></p>
+</section>
+<section id="clustering-on-tpm-using-the-100-most-variable-genes" class="level3">
+<h3 class="anchored" data-anchor-id="clustering-on-tpm-using-the-100-most-variable-genes">Clustering on TPM using the 100 most variable genes</h3>
+<p>Notes: the most variable genes may not be the most important, for example, they may not have the great FC between comparisons</p>
+<p><img src="figures/clust-heatmap.png" class="img-fluid" width="602"></p>
+</section>
+</section>
+<section id="is-there-a-different-in-the-transcriptome-between-donors-that-had-a-high-ido-response-and-those-that-had-a-low-ido-response" class="level2">
+<h2 class="anchored" data-anchor-id="is-there-a-different-in-the-transcriptome-between-donors-that-had-a-high-ido-response-and-those-that-had-a-low-ido-response">Is there a different in the transcriptome between donors that had a high IDO response and those that had a low IDO response?</h2>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> IDO Response class </th>
+   <th style="text-align:right;"> mean IDO </th>
+   <th style="text-align:right;"> std dev </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> low </td>
+   <td style="text-align:right;"> 4940.5 </td>
+   <td style="text-align:right;"> 3333.93 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> high </td>
+   <td style="text-align:right;"> 36334.2 </td>
+   <td style="text-align:right;"> 11604.72 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="differential-expression" class="level3">
+<h3 class="anchored" data-anchor-id="differential-expression">Differential expression</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>class: DESeqDataSet 
+dim: 25324 18 
+metadata(1): version
+assays(1): counts
+rownames(25324): ENSG00000000003 ENSG00000000419 ... ENSG00000289634
+  ENSG00000289637
+rowData names(0):
+colnames(18): S01_P17040_unstim_lo S02_P17040_stimul_lo ...
+  S33_P16088_unstim_lo S34_P16088_stimul_lo
+colData names(9): names donor ... ATP_PBMC ATP_norm</code></pre>
+</div>
+</div>
+<p>Performing differential expression analysis between low and high responders gives 13049 comparisons (meaning 25324 - 13049 = 12275 gave NA for p values)</p>
+<div class="cell">
+
+</div>
+<p>The gene types of the tested genes are distributed as follows:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> GENETYPE </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ncRNA </td>
+   <td style="text-align:right;"> 908 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> protein-coding </td>
+   <td style="text-align:right;"> 9094 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> pseudo </td>
+   <td style="text-align:right;"> 241 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> 2806 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>NA means they are not annotated.</p>
+<p>An indicator was added for significant genes: those with FC &gt;=0 and FDR &lt;=0.05. FDR values less then 1e-50 were set to 0 (for plotting)</p>
+<div class="cell">
+
+</div>
+<p>The gene types of the tested genes are distributed as follows:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> GENETYPE </th>
+   <th style="text-align:left;"> sig </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ncRNA </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:right;"> 906 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ncRNA </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> protein-coding </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:right;"> 9092 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> protein-coding </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> pseudo </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:right;"> 241 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:right;"> 2804 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>There are very few differentially expressed genes between high and low responders.</p>
+</section>
+<section id="is-there-a-correlation-between-measured-ido-and-and-ido-transcripts" class="level3">
+<h3 class="anchored" data-anchor-id="is-there-a-correlation-between-measured-ido-and-and-ido-transcripts">Is there a correlation between measured IDO and and IDO transcripts?</h3>
+<p>---</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="correlation-between-ido-and-atp" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-between-ido-and-atp">Correlation between IDO and ATP</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="differential-expression-between-stimulated-and-unstimulated-cells" class="level2">
+<h2 class="anchored" data-anchor-id="differential-expression-between-stimulated-and-unstimulated-cells">Differential Expression between stimulated and unstimulated cells</h2>
+<p><img src="figures/pca-normalised-counts.png" class="img-fluid" width="400"></p>
+<p><img src="figures/volcano-protein-coding.png" class="img-fluid"></p>
+<p><img src="figures/volcano-ncRNA.png" class="img-fluid"></p>
+<p><img src="figures/volcano-unannotated.png" class="img-fluid"></p>
+<p><a href="figures/sig_go_results_up_stim.html">figures/sig_go_results_up_stim.html</a></p>
+<p><a href="figures/sig_go_results_down_stim.html">figures/sig_go_results_down_stim.html</a></p>
+</section>
+<section id="qs-for-claire" class="level2">
+<h2 class="anchored" data-anchor-id="qs-for-claire">Qs for Claire</h2>
+<p>The ATP values have many - is this a genuine reflection of precision?</p>
+</section>
+<section id="section" class="level2 unnumbered">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-DESeq2" class="csl-entry" role="doc-biblioentry">
+Love, Michael I., Wolfgang Huber, and Simon Anders. 2014. <span>“Moderated Estimation of Fold Change and Dispersion for RNA-Seq Data with DESeq2”</span> 15: 550. <a href="https://doi.org/10.1186/s13059-014-0550-8">https://doi.org/10.1186/s13059-014-0550-8</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

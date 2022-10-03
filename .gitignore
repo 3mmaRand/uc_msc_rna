@@ -3,3 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
+data-raw
+data-processed
+-biolpc3226.Rhistory
+test.tab
+-biolpc3032.Rhistory

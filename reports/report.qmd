@@ -1,0 +1,250 @@
+---
+title: "Transcriptome of Umbilical Cord-Mesenchymal Stromal Cell response to inflammation"
+author: "Emma Rand"
+format: html
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+bibliography: references.bib
+---
+
+## Introduction
+
+We have:
+
+-   RNA-Seq data for donor UC-MSC stimulated or not with inflammatory cytokines
+
+-   indoleamine 2,3-dioxygenase (IDO) expression measured by PCR in stimulated UC-MSC. IDO is an immunomodulatory and anti-inflammatory protein up-regulated in response to inflammatory cytokines.
+
+-   ATP from stimulated or unstimulated PBMC co-cultured with UC-MSC . ATP is measure of PBMCs proliferation where high ATP indicated high proliferation and thus low PBMC suppression. Note that cells of two donors did not survive culture: P17041 and P17055
+
+```{r}
+library("tidyverse")
+library("ggrepel")
+library("knitr")
+library("kableExtra")
+
+```
+
+### Metadata
+
+```{r}
+# COLUMN (META) DATA
+# import column data
+# information on each of the samples (the columns of the count matrix)
+coldata_f    <- "../background/coldata"
+coldata <- read.table(coldata_f,
+                      stringsAsFactors = T,
+                      header = TRUE)
+row.names(coldata) <- coldata$names
+
+coldata <- coldata %>% mutate("ATP_norm" = ATP/ATP_PBMC)
+
+# make unstim the base level and low the base level
+coldata$treatment <- relevel(coldata$treatment, "unstim")
+coldata$idoresp <- relevel(coldata$idoresp, "low")
+```
+
+```{r}
+
+knitr::kable(coldata,
+             digits = 5, row.names = FALSE,
+             col.names = c("Sample name",
+                           "Donor",
+                           "Treatment",
+                           "IDO response class",
+                           "IDO value (PCR)",
+                           "Rank of ATP values (low to high)",
+                           "ATP value",
+                           "ATP in control",
+                           "ATP relative to control")) %>% 
+  kableExtra::kable_styling(font_size = 12)
+
+```
+
+-   Treatment: stimulated with inflammatory cytokines or unstimluated
+
+-   IDO response class: Claire's binary classification based on IDO value. Indicates whether donor has higher or low IDO in response the stimulation
+
+-   IDO value (PCR): (IDO) expression measured by PCR in stimulated UC-MSC.
+
+-   Rank of ATP values (low to high): Rank of ATP value within treatment group. 1 = lowest PBMC suppression (highest ATP) , 7 = highest PBMS suppression (lowest ATP)
+
+-   ATP value: in stimulated or unstimulated PBMC co-cultured with UC-MSC; low ATP indicates donor UC-MSCs suppress PBMC well , high ATP indicates donor UC-MSCs poorly suppress PBMC
+
+-   ATP in control: in stimulated or unstimulated PBMC alone
+
+-   ATP relative to control: ATP value/ATP in control:
+
+```{r}
+#| include: false
+# check I have ranked correctly
+coldata %>% #filter(treatment == "unstim") %>% 
+  ggplot(aes(x = ATPrank, y = ATP, colour = treatment)) +
+  geom_point()
+# yep
+```
+
+## Questions
+
+-   Is there a difference in the transcriptome between donors that had a high IDO response and those that had a low IDO response where the IDO expression was PCR'd
+
+    -   are there differences between these higher-responders and low-responders
+
+    -   if yes, how are theses differences characterised
+
+    -   is there a correlation between measured IDO and and IDO transcripts
+
+<!-- -->
+
+-   Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)
+
+    -   are there differences between weak and strong suppressers
+
+    -   if yes, how are theses differences characterised
+
+    -   is there a correlation between measured IDO and and PBMC suppression
+
+We can examine the difference between stimulated and unstimulated (averaging over the patients) and the difference between patients (averaging over the treatments) but not whether the effect of the stimulated differs between patients as we do not have within treatment-patient replication.
+
+We can examine the difference between higher-responders and low-responders in the stimulated and unstimulated groups.
+
+## Methods
+
+Counts for each transcript were summed across samples and those with fewer than 2 were removed leaving 25324 genes. For exploratory analysis counts were converted to Transcripts Per Million (TPM), a normalization method (the number of transcripts per 1,000,000 RNA molecule). It allows some comparison in expression between genes in within a sample. The variance in TMP across samples was calculated.
+
+DESeq2 [@DESeq2] was used for differential expression. It uses a robust normalisation method based on the negative binomial distribution, with variance and mean linked by local regression. This makes it possible to compare the expression of the same gene among samples.
+
+## Exploratory analysis of the read count table
+
+The aim here is to examine how sample cluster on the basis of gene expression before testing specific hypothesis about differences between groups.
+
+### PCA
+
+Performed on $log_2(TMP + 1)$ for 25324 genes to visualise sources of variation. Coloured by donor on the left and by the rank ATP on the right.
+
+-   Clear separation of treatment groups on PC1
+
+-   Possibly some separation of donors on PC2.
+
+    -   P17040 and P17041 appear more similar (and they are both low responders);
+
+    -   P14086 (high responder) and P15142 (low responder) appear more similar.
+
+    -   Note P17041 cells did not survive culture which is a shame as that donor appears to share expression with another donor in both stimulated and unstimulated states.
+
+[![](figures/pca-log2tmp-all.png){fig-align="left" width="800"}](figures/pca-log2tmp-all.png)
+
+Since the first two PCs capture only \~ 40% of the variation. We can consider pairwise plots of the the first 6 PC (67% variance) to see it differences between donors show up in other dimensions.
+
+![](figures/pca_pairs_log2tmp.png){width="600"}
+
+-   PC3 separates P17083 (high) from others
+
+-   PC5 separates P14086 (high) from others
+
+### Clustering on TPM using the 100 most variable genes
+
+Notes: the most variable genes may not be the most important, for example, they may not have the great FC between comparisons.
+
+![](figures/clust-heatmap.png){width="602"}
+
+## Is there a different in the transcriptome between donors that had a high IDO response and those that had a low IDO response?
+
+Those classed as high IDO responders are about 10 times as high. Notes, one high responder and one low responder did not survive culture.
+
+```{r}
+coldata %>% filter(treatment == "stimul") %>% 
+  group_by("IDO Response class" = idoresp) %>% 
+  summarise("mean IDO" = mean(fcido),
+            "std dev" = sd(fcido)) %>% 
+  kable(digits = 2, row.names = FALSE) %>% 
+  kableExtra::kable_styling(font_size = 12)
+```
+
+### Differential expression
+
+Performing differential expression analysis between low and high responders gives 13049 valid comparisons (i.e., 12275 comparisons gave NA for p values; NA occurs when where is insufficient data or extreme outliers). The contrast was with low as the base, meaning +'ve FC are upregulated in high responders relative to low responders.
+
+Annotations were added from genbank: gene symbol, genename, genetype from the ensembl id.
+
+An indicator was added for significant genes: those with absolute foldchange \> 0 and FDR \<=0.05. FDR values less then 1e-50 were set to 0.
+
+```{r}
+de_ido_resp_results <- read_csv("../data-processed/de_ido_resp_results.csv")
+
+de_ido_resp_results %>% 
+  group_by(GENETYPE, sig) %>% 
+  summarise(n = length(GENETYPE)) %>% 
+  kable(row.names = FALSE) %>% 
+  kable_styling(font_size = 12)
+```
+
+NA genes are ensembl gene ids without annotation.
+
+There are only 6 / 13049 differentially expressed genes between high and low responders.
+
+```{r}
+de_ido_resp_results %>% 
+  filter(sig) %>%
+  select(SYMBOL, gene_id, log2FoldChange, padj, GENENAME) %>% 
+  kable(row.names = FALSE, digits = 4) %>% 
+  kable_styling(font_size = 12)
+
+```
+
+### Is there a correlation between measured IDO and and IDO transcripts?
+
+There is a suggestion of a correlation between the PCR's IDO and the IDO transcripts in that none of the low responders had high transcripts. However some of the high responders had transcripts no higher than the low responders.
+
+[![](figures/ido-correlation.png){width="400"}](figures/ido-correlation.png)
+
+\-\--
+
+```{r}
+coldata %>% filter(treatment == "stimul") %>% 
+  ggplot(aes(x = ATP_norm, y = fcido)) +
+  geom_point() +
+  geom_text_repel(aes(label = donor))
+
+```
+
+```{r}
+coldata %>% 
+  ggplot(aes(x = idoresp, y = ATP_norm)) +
+  geom_point() +
+  facet_grid(.~ treatment) +
+  geom_text_repel(aes(label = donor))
+```
+
+### Correlation between IDO and ATP
+
+```{r}
+coldata %>% 
+  ggplot(aes(x = fcido, y = ATP_norm, colour = donor)) +
+  geom_point(size = 2) +
+  facet_grid(. ~ treatment) +
+  theme_classic()
+```
+
+## Differential Expression between stimulated and unstimulated cells
+
+![](figures/pca-normalised-counts.png){width="400"}
+
+![](figures/volcano-protein-coding.png)
+
+![](figures/volcano-ncRNA.png)
+
+![](figures/volcano-unannotated.png)
+
+### Functional annotation
+
+GO Terms were extracted for the for differentially expressed between stimulated and unstimulated cells
+
+[figures/sig_go_results_up_stim.html](figures/sig_go_results_up_stim.html)
+
+[figures/sig_go_results_down_stim.html](figures/sig_go_results_down_stim.html)
+
+## 
