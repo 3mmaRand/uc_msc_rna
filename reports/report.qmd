@@ -64,7 +64,7 @@ knitr::kable(coldata,
 
 ```
 
--   Treatment: stimulated with inflammatory cytokines or unstimluated
+-   Treatment: stimulated with inflammatory cytokines or unstimulated
 
 -   IDO response class: Claire's binary classification based on IDO value. Indicates whether donor has higher or low IDO in response the stimulation
 
@@ -76,16 +76,7 @@ knitr::kable(coldata,
 
 -   ATP in control: in stimulated or unstimulated PBMC alone
 
--   ATP relative to control: ATP value/ATP in control:
-
-```{r}
-#| include: false
-# check I have ranked correctly
-coldata %>% #filter(treatment == "unstim") %>% 
-  ggplot(aes(x = ATPrank, y = ATP, colour = treatment)) +
-  geom_point()
-# yep
-```
+-   ATP relative to control: ATP value/ATP in control
 
 ## Questions
 
@@ -97,11 +88,12 @@ coldata %>% #filter(treatment == "unstim") %>%
 
     -   is there a correlation between measured IDO and and IDO transcripts
 
+```{=html}
 <!-- -->
+```
+-   Is there a difference in the transcriptome between that had a low ATP (strong PBMC suppression) and those that had a high ATP (weak PBMC suppression)
 
--   Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)
-
-    -   are there differences between weak and strong suppressers
+    -   are there differences between weak and strong suppressors
 
     -   if yes, how are theses differences characterised
 
@@ -153,7 +145,7 @@ Notes: the most variable genes may not be the most important, for example, they 
 
 ## Is there a different in the transcriptome between donors that had a high IDO response and those that had a low IDO response?
 
-Those classed as high IDO responders are about 10 times as high. Notes, one high responder and one low responder did not survive culture.
+Those classed as high IDO responders are about 10 times as high. Notes, one high responder and one low responder did not survive culture (i.e., there is no ATP data).
 
 ```{r}
 coldata %>% filter(treatment == "stimul") %>% 
@@ -184,7 +176,7 @@ de_ido_resp_results %>%
 
 NA genes are ensembl gene ids without annotation.
 
-There are only 6 / 13049 differentially expressed genes between high and low responders.
+There are only 6 / 13049 differentially expressed genes between high and low responders. These are:
 
 ```{r}
 de_ido_resp_results %>% 
@@ -197,39 +189,40 @@ de_ido_resp_results %>%
 
 ### Is there a correlation between measured IDO and and IDO transcripts?
 
-There is a suggestion of a correlation between the PCR's IDO and the IDO transcripts in that none of the low responders had high transcripts. However some of the high responders had transcripts no higher than the low responders.
+There is a suggestion of a correlation between the PCR's IDO and the IDO transcripts in that none of the low responders had high transcripts. However some of the high responders had transcripts no higher than the low responders. IDO transcripts are zero in all but one patient (P17041 where they are 0.9063194, 1-2 orders of magnitude lower than transcripts of IDO in the stimulated groups).
 
 [![](figures/ido-correlation.png){width="400"}](figures/ido-correlation.png)
 
+##  Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)
+
+### What is the range of ATP values?
+
+```{r}
+coldata %>% filter(!is.na(ATP)) %>% 
+  ggplot(aes(x = donor, y = ATP_norm, colour = treatment)) +
+  geom_point(size = 2) +
+  ylab("ATP relative to control") +
+  theme_classic()
+
+```
+
+With three exceptions, these values are very similar so using a rank would inflate the difference between some donors and downplay the difference between others. For donors P15142, P16088, P16143 and P17040 suppression (low ATP) is higher in stimulated treatment, but not by much. In P12316 and P14086 suppression is actually higher in unstimulated. Only in one patient, P17083, is the effect what I'd expect (though perhaps I have misunderstanding).
+
+### Is there a correlation IDO and and PBMC suppression?
+
+We have PCR'd IDO for only for the stimulated group. IDO transcripts are zero in all but one patient (P17041 where they are 0.9063194, 1-2 orders of magnitude lower than transcripts of IDO in the stimulated groups).
+
+![](figures/idopcr-atp-correlation.png){width="400"}
+
+![](figures/idotrans-atp-correlation.png){width="400"}
+
+The donors that stand out are P12316 and P17083 but in what seems an odd way to me (again, possible misunderstanding). They have high PCR'd IDO but transcript IDO no different to those with low PCR'd IDO. And they have high ATP indicating poor suppression of t cells.
+
+P17083 is one of the patients that seems to separate out in the exploratory PCA. Perhaps it is worth doing differential expression for P12316 and P17083 vs the others?
+
 \-\--
 
-```{r}
-coldata %>% filter(treatment == "stimul") %>% 
-  ggplot(aes(x = ATP_norm, y = fcido)) +
-  geom_point() +
-  geom_text_repel(aes(label = donor))
-
-```
-
-```{r}
-coldata %>% 
-  ggplot(aes(x = idoresp, y = ATP_norm)) +
-  geom_point() +
-  facet_grid(.~ treatment) +
-  geom_text_repel(aes(label = donor))
-```
-
-### Correlation between IDO and ATP
-
-```{r}
-coldata %>% 
-  ggplot(aes(x = fcido, y = ATP_norm, colour = donor)) +
-  geom_point(size = 2) +
-  facet_grid(. ~ treatment) +
-  theme_classic()
-```
-
-## Differential Expression between stimulated and unstimulated cells
+### Differential Expression between stimulated and unstimulated cells
 
 ![](figures/pca-normalised-counts.png){width="400"}
 

@@ -322,13 +322,13 @@ div.csl-indent {
 </div>
 </div>
 <ul>
-<li><p>Treatment: stimulated with inflammatory cytokines or unstimluated</p></li>
+<li><p>Treatment: stimulated with inflammatory cytokines or unstimulated</p></li>
 <li><p>IDO response class: Claire’s binary classification based on IDO value. Indicates whether donor has higher or low IDO in response the stimulation</p></li>
 <li><p>IDO value (PCR): (IDO) expression measured by PCR in stimulated UC-MSC.</p></li>
 <li><p>Rank of ATP values (low to high): Rank of ATP value within treatment group. 1 = lowest PBMC suppression (highest ATP) , 7 = highest PBMS suppression (lowest ATP)</p></li>
 <li><p>ATP value: in stimulated or unstimulated PBMC co-cultured with UC-MSC; low ATP indicates donor UC-MSCs suppress PBMC well , high ATP indicates donor UC-MSCs poorly suppress PBMC</p></li>
 <li><p>ATP in control: in stimulated or unstimulated PBMC alone</p></li>
-<li><p>ATP relative to control: ATP value/ATP in control:</p></li>
+<li><p>ATP relative to control: ATP value/ATP in control</p></li>
 </ul>
 </section>
 </section>
@@ -344,9 +344,9 @@ div.csl-indent {
 </ul>
 <!-- -->
 <ul>
-<li><p>Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)</p>
+<li><p>Is there a difference in the transcriptome between that had a low ATP (strong PBMC suppression) and those that had a high ATP (weak PBMC suppression)</p>
 <ul>
-<li><p>are there differences between weak and strong suppressers</p></li>
+<li><p>are there differences between weak and strong suppressors</p></li>
 <li><p>if yes, how are theses differences characterised</p></li>
 <li><p>is there a correlation between measured IDO and and PBMC suppression</p></li>
 </ul></li>
@@ -394,7 +394,7 @@ div.csl-indent {
 </section>
 <section id="is-there-a-different-in-the-transcriptome-between-donors-that-had-a-high-ido-response-and-those-that-had-a-low-ido-response" class="level2">
 <h2 class="anchored" data-anchor-id="is-there-a-different-in-the-transcriptome-between-donors-that-had-a-high-ido-response-and-those-that-had-a-low-ido-response">Is there a different in the transcriptome between donors that had a high IDO response and those that had a low IDO response?</h2>
-<p>Those classed as high IDO responders are about 10 times as high. Notes, one high responder and one low responder did not survive culture.</p>
+<p>Those classed as high IDO responders are about 10 times as high. Notes, one high responder and one low responder did not survive culture (i.e., there is no ATP data).</p>
 <div class="cell">
 <div class="cell-output-display">
 
@@ -442,7 +442,7 @@ div.csl-indent {
   <tr>
    <td style="text-align:left;"> ncRNA </td>
    <td style="text-align:left;"> FALSE </td>
-   <td style="text-align:right;"> 906 </td>
+   <td style="text-align:right;"> 909 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ncRNA </td>
@@ -452,7 +452,7 @@ div.csl-indent {
   <tr>
    <td style="text-align:left;"> protein-coding </td>
    <td style="text-align:left;"> FALSE </td>
-   <td style="text-align:right;"> 9092 </td>
+   <td style="text-align:right;"> 9105 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> protein-coding </td>
@@ -462,12 +462,17 @@ div.csl-indent {
   <tr>
    <td style="text-align:left;"> pseudo </td>
    <td style="text-align:left;"> FALSE </td>
-   <td style="text-align:right;"> 241 </td>
+   <td style="text-align:right;"> 244 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> unknown </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> FALSE </td>
-   <td style="text-align:right;"> 2804 </td>
+   <td style="text-align:right;"> 2784 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> NA </td>
@@ -480,7 +485,7 @@ div.csl-indent {
 </div>
 </div>
 <p>NA genes are ensembl gene ids without annotation.</p>
-<p>There are only 6 / 13049 differentially expressed genes between high and low responders.</p>
+<p>There are only 6 / 13049 differentially expressed genes between high and low responders. These are:</p>
 <div class="cell">
 <div class="cell-output-display">
 
@@ -545,39 +550,41 @@ div.csl-indent {
 </section>
 <section id="is-there-a-correlation-between-measured-ido-and-and-ido-transcripts" class="level3">
 <h3 class="anchored" data-anchor-id="is-there-a-correlation-between-measured-ido-and-and-ido-transcripts">Is there a correlation between measured IDO and and IDO transcripts?</h3>
-<p>There is a suggestion of a correlation between the PCR’s IDO and the IDO transcripts in that none of the low responders had high transcripts. However some of the high responders had transcripts no higher than the low responders.</p>
+<p>There is a suggestion of a correlation between the PCR’s IDO and the IDO transcripts in that none of the low responders had high transcripts. However some of the high responders had transcripts no higher than the low responders. IDO transcripts are zero in all but one patient (P17041 where they are 0.9063194, 1-2 orders of magnitude lower than transcripts of IDO in the stimulated groups).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="figures/ido-correlation.png"><img src="figures/ido-correlation.png" class="img-fluid figure-img" width="400"></a></p>
 </figure>
 </div>
+</section>
+</section>
+<section id="is-there-a-difference-in-the-transcriptome-between-that-had-a-low-atp-weak-pbmc-suppression-and-those-that-had-a-high-atp-strong-pbmc-suppression" class="level2">
+<h2 class="anchored" data-anchor-id="is-there-a-difference-in-the-transcriptome-between-that-had-a-low-atp-weak-pbmc-suppression-and-those-that-had-a-high-atp-strong-pbmc-suppression">Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)</h2>
+<section id="what-is-the-range-of-atp-values" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-the-range-of-atp-values">What is the range of ATP values?</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>With three exceptions, these values are very similar so using a rank would inflate the difference between some donors and downplay the difference between others. For donors P15142, P16088, P16143 and P17040 suppression (low ATP) is higher in stimulated treatment, but not by much. In P12316 and P14086 suppression is actually higher in unstimulated. Only in one patient, P17083, is the effect what I’d expect (though perhaps I have misunderstanding).</p>
+</section>
+<section id="is-there-a-correlation-ido-and-and-pbmc-suppression" class="level3">
+<h3 class="anchored" data-anchor-id="is-there-a-correlation-ido-and-and-pbmc-suppression">Is there a correlation IDO and and PBMC suppression?</h3>
+<p>We have PCR’d IDO for only for the stimulated group. IDO transcripts are zero in all but one patient (P17041 where they are 0.9063194, 1-2 orders of magnitude lower than transcripts of IDO in the stimulated groups).</p>
+<p><img src="figures/idopcr-atp-correlation.png" class="img-fluid" width="400"></p>
+<p><img src="figures/idotrans-atp-correlation.png" class="img-fluid" width="400"></p>
+<p>The donors that stand out are P12316 and P17083 but in what seems an odd way to me (again, possible misunderstanding). They have high PCR’d IDO but transcript IDO no different to those with low PCR’d IDO. And they have high ATP indicating poor suppression of t cells.</p>
+<p>P17083 is one of the patients that seems to separate out in the exploratory PCA. Perhaps it is worth doing differential expression for P12316 and P17083 vs the others?</p>
 <p>---</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="report_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="report_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
-<section id="correlation-between-ido-and-atp" class="level3">
-<h3 class="anchored" data-anchor-id="correlation-between-ido-and-atp">Correlation between IDO and ATP</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="report_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-</section>
-<section id="differential-expression-between-stimulated-and-unstimulated-cells" class="level2">
-<h2 class="anchored" data-anchor-id="differential-expression-between-stimulated-and-unstimulated-cells">Differential Expression between stimulated and unstimulated cells</h2>
+<section id="differential-expression-between-stimulated-and-unstimulated-cells" class="level3">
+<h3 class="anchored" data-anchor-id="differential-expression-between-stimulated-and-unstimulated-cells">Differential Expression between stimulated and unstimulated cells</h3>
 <p><img src="figures/pca-normalised-counts.png" class="img-fluid" width="400"></p>
 <p><img src="figures/volcano-protein-coding.png" class="img-fluid"></p>
 <p><img src="figures/volcano-ncRNA.png" class="img-fluid"></p>
 <p><img src="figures/volcano-unannotated.png" class="img-fluid"></p>
+</section>
 <section id="functional-annotation" class="level3">
 <h3 class="anchored" data-anchor-id="functional-annotation">Functional annotation</h3>
 <p>GO Terms were extracted for the for differentially expressed between stimulated and unstimulated cells</p>
