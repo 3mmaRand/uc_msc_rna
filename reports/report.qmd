@@ -45,6 +45,7 @@ coldata <- coldata %>% mutate("ATP_norm" = ATP/ATP_PBMC)
 # make unstim the base level and low the base level
 coldata$treatment <- relevel(coldata$treatment, "unstim")
 coldata$idoresp <- relevel(coldata$idoresp, "low")
+coldata$idotrans <- relevel(coldata$idotrans, "low")
 ```
 
 ```{r}
@@ -88,9 +89,8 @@ knitr::kable(coldata,
 
     -   is there a correlation between measured IDO and and IDO transcripts
 
-```{=html}
 <!-- -->
-```
+
 -   Is there a difference in the transcriptome between that had a low ATP (strong PBMC suppression) and those that had a high ATP (weak PBMC suppression)
 
     -   are there differences between weak and strong suppressors
@@ -193,7 +193,7 @@ There is a suggestion of a correlation between the PCR's IDO and the IDO transcr
 
 [![](figures/ido-correlation.png){width="400"}](figures/ido-correlation.png)
 
-##  Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)
+## Is there a difference in the transcriptome between that had a low ATP (weak PBMC suppression) and those that had a high ATP (strong PBMC suppression)
 
 ### What is the range of ATP values?
 
