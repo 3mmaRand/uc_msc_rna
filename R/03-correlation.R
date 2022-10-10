@@ -23,6 +23,19 @@ coldata$names <- as.character((coldata$names))
 temp <- coldata %>% select(names, fcido, ATP, ATP_norm) %>%
   merge(temp, by = "names")
 
+temp %>%
+  filter(treatment == "stimul") %>%
+  summarise(mean = mean(ENSG00000131203),
+                   sd = sd(ENSG00000131203),
+                   min = min(ENSG00000131203),
+                   max = max(ENSG00000131203))
+temp %>%
+  filter(treatment == "stimul") %>%
+  summarise(mean = mean(fcido),
+            sd = sd(fcido),
+            min = min(fcido),
+            max = max(fcido))
+
 ido_cor <- temp %>%
   filter(treatment == "stimul") %>%
   ggplot(aes(x = fcido, y = ENSG00000131203, colour = idoresp)) +

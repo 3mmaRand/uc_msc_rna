@@ -60,6 +60,7 @@ knitr::kable(coldata,
                            "Rank of ATP values (low to high)",
                            "ATP value",
                            "ATP in control",
+                           "IDO transcript class",
                            "ATP relative to control")) %>% 
   kableExtra::kable_styling(font_size = 12)
 
@@ -77,6 +78,8 @@ knitr::kable(coldata,
 
 -   ATP in control: in stimulated or unstimulated PBMC alone
 
+-   IDO transcript class: binary classification based on IDO transcripts. Indicates whether donor has high (P12316 and P17083) or low (all others) IDO transcripts in response the stimulation
+
 -   ATP relative to control: ATP value/ATP in control
 
 ## Questions
@@ -91,7 +94,7 @@ knitr::kable(coldata,
 
 <!-- -->
 
--   Is there a difference in the transcriptome between that had a low ATP (strong PBMC suppression) and those that had a high ATP (weak PBMC suppression)
+-   Is there a difference in the transcriptome between donors that had a low ATP (strong PBMC suppression) and those that had a high ATP (weak PBMC suppression)
 
     -   are there differences between weak and strong suppressors
 
@@ -99,7 +102,13 @@ knitr::kable(coldata,
 
     -   is there a correlation between measured IDO and and PBMC suppression
 
-We can examine the difference between stimulated and unstimulated (averaging over the patients) and the difference between patients (averaging over the treatments) but not whether the effect of the stimulated differs between patients as we do not have within treatment-patient replication.
+<!-- -->
+
+-   Is there a difference in the rest of the transcriptome between donors that had high IDO transcripts (P12316 and P17083) and the other donors
+
+    -   if yes, how are theses differences characterised
+
+    We can examine the difference between stimulated and unstimulated (averaging over the patients) and the difference between patients (averaging over the treatments) but not whether the effect of the stimulated differs between patients as we do not have within treatment-patient replication.
 
 We can examine the difference between higher-responders and low-responders in the stimulated and unstimulated groups.
 
@@ -219,6 +228,34 @@ We have PCR'd IDO for only for the stimulated group. IDO transcripts are zero in
 The donors that stand out are P12316 and P17083 but in what seems an odd way to me (again, possible misunderstanding). They have high PCR'd IDO but transcript IDO no different to those with low PCR'd IDO. And they have high ATP indicating poor suppression of t cells.
 
 P17083 is one of the patients that seems to separate out in the exploratory PCA. Perhaps it is worth doing differential expression for P12316 and P17083 vs the others?
+
+## Is there a difference in the rest of the transcriptome between donors that had high IDO transcripts and high ATP (P12316 and P17083) and the other donors?
+
+### Differential expression
+
+Performing differential expression analysis between P12316 and P17083 and others gives nnn valid comparisons. The contrast was with low as the base, meaning +'ve FC are upregulated in P12316 and P17083 relative to others
+
+Annotations were added from genbank: gene symbol, genename, genetype from the ensembl id.
+
+An indicator was added for significant genes: those with absolute foldchange \> 0 and FDR \<=0.05. FDR values less then 1e-50 were set to 0.
+
+```{r}
+de_ido_resp_results <- read_csv("../data-processed/de_ido_resp_idotrans_results.csv")
+
+de_ido_resp_results %>% 
+  group_by(GENETYPE, sig) %>% 
+  summarise(n = length(GENETYPE)) %>% 
+  kable(row.names = FALSE) %>% 
+  kable_styling(font_size = 12)
+```
+
+NA genes are ensembl gene ids without annotation.
+
+There are 77 / 16480 differentially expressed genes between P12316 and P17083 and others.
+
+![](figures/volcano-idotrans.png){width="600"}
+
+This maybe looks like something but many of these are not annotated and there was no significant enrichment of any GO terms.
 
 \-\--
 

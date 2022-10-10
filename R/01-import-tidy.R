@@ -28,3 +28,19 @@ test_table <- test_table %>%
                    na.rm = T)) %>% ungroup() %>%
   filter(sum > 1)
 # dim(test_table)  25324  (29970 - 25324 = 4646 genes removed)
+
+# COLUMN (META) DATA
+# import column data
+# information on each of the samples (the columns of the count matrix)
+coldata_f    <- "background/coldata"
+coldata <- read.table(coldata_f,
+                      stringsAsFactors = T,
+                      header = TRUE)
+row.names(coldata) <- coldata$names
+
+coldata <- coldata %>% mutate("ATP_norm" = ATP/ATP_PBMC)
+
+# make unstim the base level and low the base level
+coldata$treatment <- relevel(coldata$treatment, "unstim")
+coldata$idoresp <- relevel(coldata$idoresp, "low")
+coldata$idotrans <- relevel(coldata$idotrans, "low")

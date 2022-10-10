@@ -10,53 +10,6 @@ library("patchwork")
 # library("AnnotationDbi")
 # library("heatmapply")
 
-# filtering reads_count > 1 gives same results as test_table
-# using test_table because it has the info on code length
-
-test_table_f  <- "data-raw/DE_Results/testTable.tab"
-test_table    <- read_delim(test_table_f)
-
-# rename samples in test_table using "reads-count-names.txt"
-# so that the sample encodes sample number, patient and treatment
-# S##_p#####_treatment so that S01_P17040_unstim is patient 17/040 unstimulated
-# aka sample 1 and S26_P15142_stimul is patient 15/142 stimulated aka sample 26
-names(test_table) <- readLines("background/test-table-names.txt")
-
-
-# calculate the sum of counts across samples
-# and filter to keep only those with a sum greater than 1
-# dim(test_table) 29970
-test_table <- test_table %>%
-  rowwise() %>%
-  mutate(sum = sum(c_across(S01_P17040_unstim_lo:S34_P16088_stimul_lo),
-                   na.rm = T)) %>% ungroup() %>%
-  filter(sum > 1)
-# dim(test_table)  25324  (29970 - 25324 = 4646 genes removed)
-
-# COLUMN (META) DATA
-# import column data
-# information on each of the samples (the columns of the count matrix)
-coldata_f    <- "background/coldata"
-coldata <- read.table(coldata_f,
-                      stringsAsFactors = T,
-                      header = TRUE)
-row.names(coldata) <- coldata$names
-
-
-# check the order of the levels
-levels(coldata$treatment)
-# [1] "stimul" "unstim"
-
-levels(coldata$idoresp)
-# [1] "high" "low"
-
-# make unstim the base level and low the base level
-coldata$treatment <- relevel(coldata$treatment, "unstim")
-coldata$idoresp <- relevel(coldata$idoresp, "low")
-
-
-
-# matrix of the counts, samples in columns, transcripts in rows
 
 ##################################################################
 #
@@ -66,29 +19,29 @@ counts <- test_table %>%
 
 row.names(counts) <- test_table$gene_id
 
-# Computing CPM
-
-cpm <- apply(subset(counts, select = c(-code_length)), 2,
-             function(x) x/sum(as.numeric(x)) * 10^6)
-
-# Computing RPKM
-# create a vector of gene lengths
-geneLengths <- as.vector(subset(counts, select = c(code_length)))
-
-# compute rpkm
-rpkm <- apply(X = subset(counts, select = c(-code_length)),
-              MARGIN = 2,
-              FUN = function(x) {
-                10^9 * x / geneLengths / sum(as.numeric(x))
-              })
-# Computing TPM
-# find gene length normalized values
-rpk <- apply( subset(counts, select = c(-code_length)), 2,
-              function(x) x/(geneLengths/1000))
-#normalize by the sample size using rpk values
-tpm <- apply(rpk, 2, function(x) x / sum(as.numeric(x)) * 10^6)
-# LIVERPOOL HAVE USED code_length not end - start to calculate tmp
-# so i have too
+# # Computing CPM
+#
+# cpm <- apply(subset(counts, select = c(-code_length)), 2,
+#              function(x) x/sum(as.numeric(x)) * 10^6)
+#
+# # Computing RPKM
+# # create a vector of gene lengths
+# geneLengths <- as.vector(subset(counts, select = c(code_length)))
+#
+# # compute rpkm
+# rpkm <- apply(X = subset(counts, select = c(-code_length)),
+#               MARGIN = 2,
+#               FUN = function(x) {
+#                 10^9 * x / geneLengths / sum(as.numeric(x))
+#               })
+# # Computing TPM
+# # find gene length normalized values
+# rpk <- apply( subset(counts, select = c(-code_length)), 2,
+#               function(x) x/(geneLengths/1000))
+# #normalize by the sample size using rpk values
+# tpm <- apply(rpk, 2, function(x) x / sum(as.numeric(x)) * 10^6)
+# # LIVERPOOL HAVE USED code_length not end - start to calculate tmp
+# # so i have too
 
 ##################################################################
 
@@ -97,137 +50,137 @@ tpm <- apply(rpk, 2, function(x) x / sum(as.numeric(x)) * 10^6)
 # but DESeq2 does
 
 
-########################################################################
-# Exploratory analysis of the read count table
-############################################################################
-# compute the variance of each gene across samples
-# note that genes with the most variance might not be those
-# with the great FC between treatments
-V <- apply(tpm, 1, var)
-# sort the results by variance in decreasing order
-# and select the top 100 genes
-selectedGenes <- names(V[order(V, decreasing = T)][1:100])
-
-anno_coldata <- coldata %>% select(-fcido, -names)
-
-# note heat map is of the genes with the great variance.
-# variance could be lower and still significant
-pheatmap(tpm[selectedGenes,], scale = 'row',
-         show_rownames = FALSE,
-         annotation_col = anno_coldata,
-         width = 6,
-         height = 9,
-         filename = "reports/figures/clust-heatmap.png",
-         main = "Top 100 most variable genes (by TPM)")
-# two of the unstim seem to cluster with the stimul in this
-# view
-# dev.off()
-######################################################################
-# PCA on all genes TMP
-######################################################################
-
-M <- t(tpm)
-M <- log2(M + 1)
-#compute PCA
-
-# carry out PCA
-pca <- M %>%
-  prcomp()
-# examine amount of variance captured
-pcvar <- summary(pca)[["importance"]][2,1:2]  %>% round(4) * 100
-
-# put sample name and pc score in a dataframe
-dat <-  data.frame(pca$x, names = rownames(M))
-
-# add the metadata from coldata for annotation of plot
-dat <- dat %>% merge(coldata, by = "names")
-
-pca_tmp <- ggplot(dat,
-                  aes(x = PC1, y = PC2, colour = donor, shape = treatment)) +
-  geom_point(size = 3) +
-  xlab(paste("PC1: ", pcvar[1],"%")) +
-  ylab(paste("PC2: ", pcvar[2],"%")) +
-
-  theme_classic()
-
-
-pca_tmp2 <- ggplot(dat,
-                  aes(x = PC1, y = PC2,
-                      colour = factor(ATPrank),
-                      shape = treatment)) +
-  geom_point(size = 3) +
-  xlab(paste("PC1: ", pcvar[1],"%")) +
-  ylab(paste("PC2: ", pcvar[2],"%")) +
-  theme_classic()
-
-pca <- pca_tmp + pca_tmp2 +
-  plot_annotation(title = "PCA on log2(TPM + 1): 25324 genes (counts > 1)")
-
-ggsave(pca,
-       filename = "reports/figures/pca-log2tmp-all.png",
-       height = 5,
-       width = 10)
-
-
-
-pca_pairs_tmp <- dat %>%
-  select(PC1:PC6, donor, treatment) %>%
-  ggpairs(aes(colour = donor, shape = treatment),
-          upper = NULL,
-          lower = list(continuous = wrap("points", size = 2)),
-          columns = 1:6,
-          diag = NULL,
-          legend = grab_legend(pca_tmp)) +
-  ggtitle("Pairwise plots of first 6 PCs",
-          subtitle = "PCA on log2(TPM + 1): 25324 genes (counts > 1)") +
-  theme_minimal()
-
-ggsave("reports/figures/pca_pairs_log2tmp.png",
-       plot = pca_pairs_tmp,
-       device = "png",
-       width = 8,
-       height = 6,
-       units = "in",
-       dpi = 300)
-
-
-pca_pairs_tmp2 <- dat %>%
-  select(PC1:PC6, ATPrank, treatment) %>%
-  ggpairs(aes(colour = factor(ATPrank), shape = treatment),
-          upper = NULL,
-          lower = list(continuous = wrap("points", size = 2)),
-          columns = 1:6,
-          diag = NULL,
-          legend = grab_legend(pca_tmp2)) +
-  ggtitle("Pairwise plots of first 6 PCs",
-          subtitle = "PCA on log2(TPM + 1): 25324 genes (counts > 1)") +
-  theme_minimal()
-ggsave("reports/figures/pca_pairs_log2tmp2.png",
-       plot = pca_pairs_tmp2,
-       device = "png",
-       width = 8,
-       height = 6,
-       units = "in",
-       dpi = 300)
-
-
-#############################################################################
-# correlation between samples
+# ########################################################################
+# # Exploratory analysis of the read count table
 # ############################################################################
-corr_matrix <- cor(tpm)
-anno_coldata <- coldata %>%
-  select(-names, -fcido)
-corrplot(corr_matrix, order = 'hclust',
-         addrect = 2, addCoef.col = 'white',
-         number.cex = 0.7)
-pheatmap(corr_matrix,
-         annotation_col = anno_coldata,
-       #  cutree_cols = 3,
-         width = 8,
-         height = 6,
-         filename = "reports/figures/correlation.png",
-         main = "Correlation between in TMP scores between samples")
-# dev.off()
+# # compute the variance of each gene across samples
+# # note that genes with the most variance might not be those
+# # with the great FC between treatments
+# V <- apply(tpm, 1, var)
+# # sort the results by variance in decreasing order
+# # and select the top 100 genes
+# selectedGenes <- names(V[order(V, decreasing = T)][1:100])
+#
+# anno_coldata <- coldata %>% select(-fcido, -names)
+#
+# # note heat map is of the genes with the great variance.
+# # variance could be lower and still significant
+# pheatmap(tpm[selectedGenes,], scale = 'row',
+#          show_rownames = FALSE,
+#          annotation_col = anno_coldata,
+#          width = 6,
+#          height = 9,
+#          filename = "reports/figures/clust-heatmap.png",
+#          main = "Top 100 most variable genes (by TPM)")
+# # two of the unstim seem to cluster with the stimul in this
+# # view
+# # dev.off()
+# ######################################################################
+# # PCA on all genes TMP
+# ######################################################################
+#
+# M <- t(tpm)
+# M <- log2(M + 1)
+# #compute PCA
+#
+# # carry out PCA
+# pca <- M %>%
+#   prcomp()
+# # examine amount of variance captured
+# pcvar <- summary(pca)[["importance"]][2,1:2]  %>% round(4) * 100
+#
+# # put sample name and pc score in a dataframe
+# dat <-  data.frame(pca$x, names = rownames(M))
+#
+# # add the metadata from coldata for annotation of plot
+# dat <- dat %>% merge(coldata, by = "names")
+#
+# pca_tmp <- ggplot(dat,
+#                   aes(x = PC1, y = PC2, colour = donor, shape = treatment)) +
+#   geom_point(size = 3) +
+#   xlab(paste("PC1: ", pcvar[1],"%")) +
+#   ylab(paste("PC2: ", pcvar[2],"%")) +
+#
+#   theme_classic()
+#
+#
+# pca_tmp2 <- ggplot(dat,
+#                   aes(x = PC1, y = PC2,
+#                       colour = factor(ATPrank),
+#                       shape = treatment)) +
+#   geom_point(size = 3) +
+#   xlab(paste("PC1: ", pcvar[1],"%")) +
+#   ylab(paste("PC2: ", pcvar[2],"%")) +
+#   theme_classic()
+#
+# pca <- pca_tmp + pca_tmp2 +
+#   plot_annotation(title = "PCA on log2(TPM + 1): 25324 genes (counts > 1)")
+#
+# ggsave(pca,
+#        filename = "reports/figures/pca-log2tmp-all.png",
+#        height = 5,
+#        width = 10)
+#
+#
+#
+# pca_pairs_tmp <- dat %>%
+#   select(PC1:PC6, donor, treatment) %>%
+#   ggpairs(aes(colour = donor, shape = treatment),
+#           upper = NULL,
+#           lower = list(continuous = wrap("points", size = 2)),
+#           columns = 1:6,
+#           diag = NULL,
+#           legend = grab_legend(pca_tmp)) +
+#   ggtitle("Pairwise plots of first 6 PCs",
+#           subtitle = "PCA on log2(TPM + 1): 25324 genes (counts > 1)") +
+#   theme_minimal()
+#
+# ggsave("reports/figures/pca_pairs_log2tmp.png",
+#        plot = pca_pairs_tmp,
+#        device = "png",
+#        width = 8,
+#        height = 6,
+#        units = "in",
+#        dpi = 300)
+#
+#
+# pca_pairs_tmp2 <- dat %>%
+#   select(PC1:PC6, ATPrank, treatment) %>%
+#   ggpairs(aes(colour = factor(ATPrank), shape = treatment),
+#           upper = NULL,
+#           lower = list(continuous = wrap("points", size = 2)),
+#           columns = 1:6,
+#           diag = NULL,
+#           legend = grab_legend(pca_tmp2)) +
+#   ggtitle("Pairwise plots of first 6 PCs",
+#           subtitle = "PCA on log2(TPM + 1): 25324 genes (counts > 1)") +
+#   theme_minimal()
+# ggsave("reports/figures/pca_pairs_log2tmp2.png",
+#        plot = pca_pairs_tmp2,
+#        device = "png",
+#        width = 8,
+#        height = 6,
+#        units = "in",
+#        dpi = 300)
+
+
+# #############################################################################
+# # correlation between samples
+# # ############################################################################
+# corr_matrix <- cor(tpm)
+# anno_coldata <- coldata %>%
+#   select(-names, -fcido)
+# corrplot(corr_matrix, order = 'hclust',
+#          addrect = 2, addCoef.col = 'white',
+#          number.cex = 0.7)
+# pheatmap(corr_matrix,
+#          annotation_col = anno_coldata,
+#        #  cutree_cols = 3,
+#          width = 8,
+#          height = 6,
+#          filename = "reports/figures/correlation.png",
+#          main = "Correlation between in TMP scores between samples")
+# # dev.off()
 
 ###############################################################################
 # Differential expression analysis for Treatment
@@ -285,19 +238,50 @@ de_results = results(dds, contrast = c("treatment", "stimul", "unstim"))
 print(de_results)
 class(de_results) # "DESeqResults"
 
-# Diagnostic plots
-DESeq2::plotMA(object = dds, alpha = 0.05)
-# most genes should be on the horizontal line as most genes
-# are not differentially expressed
-
-de_results %>% data.frame() %>%
-  ggplot(aes(x = pvalue)) +
-  geom_histogram(bins = 100)
-# there seems to be a few too many high p values
+# # Diagnostic plots
+# DESeq2::plotMA(object = dds, alpha = 0.05)
+# # most genes should be on the horizontal line as most genes
+# # are not differentially expressed
+#
+# de_results %>% data.frame() %>%
+#   ggplot(aes(x = pvalue)) +
+#   geom_histogram(bins = 100)
+# # there seems to be a few too many high p values
 
 # PCA on normalised counts
 # extract normalized counts from the DESeqDataSet object
 countsNormalized <- DESeq2::counts(dds, normalized = TRUE)
+
+# all genes
+
+M <- t(countsNormalized)
+
+pca <- M %>%
+  prcomp()
+# examine amount of variance captured
+pcvar <- summary(pca)[["importance"]][2,1:2]  %>% round(4) * 100
+# put sample name and pc score in a dataframe
+dat <-  data.frame(pca$x, names = rownames(M))
+
+# add the metadata from coldata for annotation of plot
+dat <- dat %>% merge(coldata, by = "names")
+
+pca_normc <- ggplot(dat,
+                    aes(x = PC1, y = PC2,
+                        colour = donor,
+                        shape = treatment)) +
+  geom_point(size = 3) +
+  xlab(paste("PC1: ", pcvar[1],"%")) +
+  ylab(paste("PC2: ", pcvar[2],"%")) +
+  ggtitle("PCA: normalised counts") +
+  theme_classic()
+
+ggsave(pca_normc,
+       filename = "reports/figures/pca-normalised-counts-all.png",
+       height = 5,
+       width = 5)
+
+
 
 # select top 500 most variable genes
 selectedGenes <- names(sort(apply(countsNormalized, 1, var),
@@ -324,7 +308,7 @@ pca_normc <- ggplot(dat,
   theme_classic()
 
 ggsave(pca_normc,
-       filename = "reports/figures/pca-normalised-counts.png",
+       filename = "reports/figures/pca-normalised-counts-500.png",
        height = 5,
        width = 5)
 
@@ -1016,7 +1000,7 @@ ggsave(filename = "reports/figures/volcano-unannotated.png",
 
 
 ##################################################################
-#GO Terms for differentially expressed between low and high
+#GO Terms for differentially expressed between
 ##################################################################
 
 library(gprofiler2)

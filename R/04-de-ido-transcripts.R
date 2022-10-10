@@ -1,32 +1,21 @@
-####################        NEDDS EDITING         ##################
-
 
 
 ##################################################################
-# Differential expression between high and low IDO transcripts
+# Differential expression between high and low IDO transcripts and ATP
 ##################################################################
 library("DESeq2")
 
-
+# high IDO transcripts and high ATP (P12316 and P17083) and the other donors?
 
 #################################################################
-# Using all the data
+# All data
 #################################################################
 
-# S02_P17040_stimul_lo,
-# S04_P17041_stimul_lo,
-# S06_P17083_stimul_hi,
-# S14_P14086_stimul_hi,
-# S16_P12316_stimul_hi,
-# S12_P17055_stimul_hi,
-# S32_P16143_stimul_hi,
-# S26_P15142_stimul_lo,
-# S34_P16088_stimul_lo
+
 
 # count matrix
 count_data_idotrans <- test_table %>%
-  select(S01_P17040_unstim_lo:S34_P16088_stimul_lo
-         ) %>%
+  select(S01_P17040_unstim_lo:S34_P16088_stimul_lo) %>%
   as.matrix()
 row.names(count_data_idotrans) <- test_table$gene_id
 
@@ -36,11 +25,7 @@ row.names(count_data_idotrans) <- test_table$gene_id
 # define the design formula (different)
 design_idotrans <- "~ idotrans"
 
-# filter the coldata so there's only stimul
 coldata_idotrans <- coldata
-#
-# %>%
-#   filter(treatment == "stimul") %>% droplevels()
 
 # create a DESeq dataset object from the count matrix and the coldata_idotrans
 dds_idotrans <- DESeqDataSetFromMatrix(countData = count_data_idotrans,
@@ -58,13 +43,15 @@ print(dds_idotrans) # dim: 25324
 # compute GLM model based on the experimental design formula
 dds_idotrans <- DESeq(dds_idotrans) #replacing outliers and refitting for 32 genes
 
-# compute the contrast for the idoresp variable where "low"
+# compute the contrast for the idotrans variable where "low"
 # is the base
 # this means +'ve FC are upreg in high relative to low
-de_results_idotrans  <- results(dds_idotrans, contrast = c("idotrans", "high", "low"))
+de_results_idotrans  <- results(dds_idotrans,
+                                contrast = c("idotrans", "high", "low"))
 
 ###############################################################################
-# Volcano data for Differential expression analysis for IDO response: stim only
+# Volcano data for Differential expression analysis for (P12316 and P17083)
+# vs other donors: stim only
 ###############################################################################
 
 de_results_idotrans_vol <- de_results_idotrans %>%
@@ -82,7 +69,7 @@ annotations_idotrans <- AnnotationDbi::select(org.Hs.eg.db::org.Hs.eg.db,
                                                  "ENSEMBL",
                                                  "GENETYPE"),
                                      keytype = "ENSEMBL")
-# dim(annotations_idotrans) 16563  we have 83 duplicates
+# dim(annotations_idotrans) 16568        we have 88 duplicates
 
 # Determine the indices for the non-duplicated genes
 non_duplicates_idx <- which(duplicated(annotations_idotrans$ENSEMBL) == FALSE)
@@ -91,11 +78,11 @@ non_duplicates_idx <- which(duplicated(annotations_idotrans$ENSEMBL) == FALSE)
 annotations_idotrans <- annotations_idotrans[non_duplicates_idx, ]
 # dim(annotations_idotrans) 16480
 
-# table(is.na(de_results_sig_up_idotrans_high$SYMBOL)) #29 na with org.Hs.eg.db
 
 # merge annotations in to results
 names(annotations_idotrans)[1] <- "gene_id"
-de_results_idotrans_vol <- de_results_idotrans_vol %>% merge(annotations_idotrans, by = "gene_id")
+de_results_idotrans_vol <- de_results_idotrans_vol %>%
+  merge(annotations_idotrans, by = "gene_id")
 
 
 # add a indicator for impt genes - those with FC > 0 and FDR <=0.05
@@ -128,9 +115,6 @@ de_results_idotrans_vol %>%
   kable(row.names = FALSE, digits = 4) %>%
   kable_styling(font_size = 12)
 
-# write to file
-write_csv(de_results_idotrans_vol,
-          file = "data-processed/diff-expr-by-idotrans.csv")
 
 # genes that are significantly up regulated in the high DO transcripts pair
 de_results_sig_up_idotrans_high <- de_results_idotrans_vol %>%
@@ -147,8 +131,7 @@ write_csv(de_results_sig_down_idotrans_high,
           file = "data-processed/diff-expr-by-idotrans-sig-down-high.csv")
 
 
-# volcano Protein coding
-# 11807
+# volcano
 de_results_idotrans_vol  %>%
   ggplot(aes(x = log2FoldChange,
              y = -log10(fdr),
@@ -163,10 +146,10 @@ de_results_idotrans_vol  %>%
   scale_x_continuous(name = "log2 Foldchange Stimulated/Unstimulated",
                      limits = c(-5, 5)) +
   annotate("text", x = -5,  y = 4.5,
-           label = "Down regulated \nwith high IDO transcrips\nFDR < 0.05, log2FC < 0",
+           label = "Down regulated in P12316 and P17083 \nFDR < 0.05, log2FC < 0",
            hjust = 0) +
   annotate("text", x = 5,  y = 4.5,
-           label = "Up regulated \nwith high IDO transcrips\nFDR < 0.05, log2FC > 0",
+           label = "Up regulated in P12316 and P17083 \nFDR < 0.05, log2FC > 0",
            hjust = 1) +
   annotate("text", x = -5,  y = 0,
            label = "NS",
@@ -176,7 +159,7 @@ de_results_idotrans_vol  %>%
                   aes(label = SYMBOL),
                   size = 3, max.overlaps = 100) +
   guides(colour = "none") +
-  ggtitle("Volcano plot comparing those with high and low IDO transcripts",
+  ggtitle("Volcano plot comparing high IDO transcripts and high\n ATP (P12316 and P17083) and the others",
           subtitle = "Pink = fdr < 0.05") +
   theme(panel.background = element_rect(fill = "white"),
         panel.border = element_rect(colour = "black",
